@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>FocusAI</title>
+<style>
+:root{--bg:#050506;--panel:#0d0d10;--line:#28272d;--red:#ff303b;--text:#f7f7f8;--muted:#929099}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#050506;color:var(--text);font-family:Arial,Helvetica,sans-serif}
+button,input{font:inherit}
+.app{min-height:100vh;display:grid;grid-template-columns:180px minmax(0,1fr);gap:12px;padding:12px;background:radial-gradient(circle at 55% 5%,#2a080c 0,#090708 30%,#050506 72%)}
+.sidebar{height:calc(100vh - 24px);position:sticky;top:12px;border:1px solid var(--line);border-radius:17px;background:#0b0b0e;padding:14px 10px;display:flex;flex-direction:column}
+.logo{font-size:22px;font-weight:900;padding:4px 8px 18px}
+.logo span,.red{color:var(--red)}
+.nav{border:1px solid transparent;background:transparent;color:#99939d;border-radius:9px;padding:10px 11px;margin:2px 0;text-align:left;cursor:pointer;font-size:10px}
+.nav:hover,.nav.active{color:#fff;background:#290b0f;border-color:#652029}
+.pro{margin-top:auto;border:1px solid var(--line);border-radius:13px;padding:12px;font-size:8px;color:#777}
+.pro strong{display:block;color:var(--red);font-size:12px;margin:5px 0}
+.main{min-width:0}
+.top{height:48px;display:flex;align-items:center;gap:10px}
+.search{width:290px;background:#111116;border:1px solid var(--line);border-radius:10px;padding:10px 13px;color:#777;font-size:10px}
+.top-right{margin-left:auto;display:flex;align-items:center;gap:10px;font-size:10px}
+.avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#65483a;border:1px solid #6d4b4c}
+.hero-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:10px}
+.hero{height:330px;position:relative;overflow:hidden;border:1px solid var(--line);border-radius:15px;background:linear-gradient(105deg,#070708,#17080b 55%,#2a080d)}
+.hero:before{content:"";position:absolute;right:-30px;top:-30px;width:560px;height:430px;background:radial-gradient(circle,#df2834,#701119 25%,#170608 55%,transparent 70%);opacity:.62}
+.hero-text{position:relative;z-index:1;padding:38px 30px}
+.eyebrow{font-size:10px;color:#ddd}
+.hero h1{font-size:39px;line-height:1.02;letter-spacing:-2px;margin:11px 0}
+.hero p{font-size:11px;color:#bbb;line-height:1.5}
+.actions{display:flex;gap:8px;margin-top:17px}
+.btn{border:1px solid #40373a;background:#0d0c0e;color:#fff;border-radius:9px;padding:10px 13px;font-size:9px;font-weight:800;cursor:pointer}
+.btn.red-btn{background:var(--red);border-color:var(--red)}
+.students{margin-top:24px;font-size:9px;color:#999}
+.students strong{color:#fff;font-size:12px}
+.stats{display:grid;gap:8px}
+.stat{border:1px solid var(--line);border-radius:14px;background:#0b0b0e;padding:14px}
+.stat small{color:#ff454d;font-size:8px;font-weight:900;letter-spacing:1px}
+.stat strong{display:block;font-size:23px;margin:6px 0}
+.stat span{font-size:9px;color:#888}
+.progress{height:5px;background:#242228;border-radius:8px;margin:8px 0}
+.progress i{display:block;height:100%;width:85%;background:var(--red);border-radius:8px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.panel{border:1px solid var(--line);background:#0b0b0e;border-radius:14px;padding:15px}
+.timer-panel{min-height:275px;display:grid;place-items:center;text-align:center}
+.ring{width:210px;height:210px;border-radius:50%;border:3px solid var(--red);display:grid;place-items:center;box-shadow:0 0 50px rgba(255,48,59,.15)}
+.ring small{font-size:8px;color:#ff4850}
+.clock{display:block;font-size:48px;font-weight:900;margin:6px 0}
+.ring span{font-size:9px;color:#888}
+.quick h3{font-size:12px;margin:3px 0 7px}
+.quick p{font-size:9px;color:#888}
+.modes{display:flex;gap:5px;margin-top:18px;flex-wrap:wrap}
+.mode{border:1px solid var(--line);background:#111;color:#aaa;border-radius:8px;padding:8px 10px;font-size:8px;cursor:pointer}
+.mode.active{background:var(--red);color:#fff;border-color:var(--red)}
+.cards{display:grid;grid-template-columns:1.05fr 1fr 1fr;gap:10px;margin-top:10px}
+.title{display:flex;justify-content:space-between;font-size:11px}
+.title span{font-size:8px;color:#ff454d}
+.mission{padding:11px 0;border-bottom:1px solid #1e1d21;font-size:9px}
+.rank{display:grid;grid-template-columns:1fr 65px;padding:9px 0;border-bottom:1px solid #1e1d21;font-size:9px}
+.rank span{text-align:right;color:#999}
+.you{background:#250b0f;border-radius:7px;padding-left:5px}
+.bot{font-size:30px;margin:15px 0 4px}
+.ask{width:100%;margin-top:9px;border:1px solid var(--line);background:#070708;color:#fff;border-radius:8px;padding:9px;font-size:9px}
+.quote{margin-top:10px;border:1px solid var(--line);border-radius:14px;padding:18px 24px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(90deg,#0c0c0e,#19080b)}
+.quote b{font-size:16px}.quote small{color:#777}.level{color:var(--red);font-size:26px;font-weight:900}
+.bottom-nav{display:none}
+.toast{position:fixed;bottom:75px;left:50%;transform:translate(-50%,20px);opacity:0;background:#161013;border:1px solid var(--red);border-radius:10px;padding:10px 14px;font-size:10px;transition:.25s;z-index:20;max-width:90%;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:850px){
+ .app{display:block;padding:8px 8px 78px;background:radial-gradient(circle at 50% 8%,#2b080c,#080708 30%,#050506 75%)}
+ .sidebar{display:none}
+ .top{height:48px}
+ .search{width:min(62vw,300px);font-size:11px}
+ .top-right{font-size:9px;gap:5px;white-space:nowrap}
+ .top-right .streak-label{display:none}
+ .hero-grid{display:block}
+ .hero{height:390px}
+ .hero:before{right:-160px;top:30px;width:500px;height:420px}
+ .hero-text{padding:34px 22px}
+ .hero h1{font-size:34px;letter-spacing:-1.5px}
+ .actions{flex-wrap:wrap}
+ .stats{grid-template-columns:1fr 1fr;margin-top:8px}
+ .stat{padding:12px}
+ .stat strong{font-size:19px}
+ .two{grid-template-columns:1fr}
+ .timer-panel{min-height:285px}
+ .cards{grid-template-columns:1fr}
+ .quote{margin-bottom:10px}
+ .bottom-nav{position:fixed;display:flex;left:8px;right:8px;bottom:8px;height:58px;border:1px solid #333039;border-radius:18px;background:rgba(12,12,15,.96);backdrop-filter:blur(12px);z-index:15;justify-content:space-around;align-items:center}
+ .bottom-nav button{border:0;background:transparent;color:#888;font-size:9px;padding:7px;cursor:pointer}
+ .bottom-nav button.active{color:#ff303b}
+}
+@media(max-width:430px){
+ .top-right .avatar,.top-right .level-label{display:none}
+ .search{width:56vw}
+ .hero{height:405px}
+ .hero h1{font-size:31px}
+ .stats{grid-template-columns:1fr 1fr}
+ .stat strong{font-size:17px}
+ .ring{width:195px;height:195px}
+ .clock{font-size:43px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+ <div class="logo">Focus<span>AI</span></div>
+ <button class="nav active" onclick="goHome()">Home</button>
+ <button class="nav" onclick="go('focus')">Focus</button>
+ <button class="nav" onclick="go('missions')">Missions</button>
+ <button class="nav" onclick="go('leader')">Leaderboard</button>
+ <button class="nav" onclick="go('coach')">AI Coach</button>
+ <button class="nav">Achievements</button>
+ <button class="nav">Friends</button>
+ <button class="nav">Settings</button>
+ <div class="pro">Upgrade to<strong>FocusAI Pro</strong>Advanced Insights<br>Custom Focus Zones<br>Leaderboard Boost<br><button class="btn red-btn" style="width:100%;margin-top:9px" onclick="toast('FocusAI Pro is coming soon')">Upgrade Now</button></div>
+</aside>
+
+<main class="main">
+ <div class="top">
+  <div class="search">Search anything...</div>
+  <div class="top-right"><span class="streak-label red">7 day streak</span><span>Alerts</span><span class="avatar">User</span><span class="level-label red">Lv.12</span></div>
+ </div>
+
+ <div class="hero-grid">
+  <section class="hero">
+   <div class="hero-text">
+    <div class="eyebrow">Good Evening!</div>
+    <h1>Discipline today,<br><span class="red">freedom tomorrow.</span></h1>
+    <p>Stay focused. Build habits.<br>Create the future you want.</p>
+    <div class="actions"><button class="btn red-btn" onclick="startTimer()">Start a Focus Session</button><button class="btn" onclick="go('coach')">Explore the App</button></div>
+    <div class="students"><strong>1.2M+ students</strong><br>are focusing now</div>
+   </div>
+  </section>
+
+  <section class="stats">
+   <div class="stat"><small>TODAY'S STREAK</small><strong>7 days</strong><span>Keep it alive.</span></div>
+   <div class="stat"><small>FOCUS TIME TODAY</small><strong id="hours">3h 45m</strong><div class="progress"><i></i></div><span>85% of daily goal</span></div>
+   <div class="stat"><small>FOCUS XP</small><strong id="xp">+120 XP</strong><span>Great session.</span></div>
+   <div class="stat"><small>FOCUS SHIELD</small><strong>ON</strong><span>Distractions blocked.</span></div>
+  </section>
+ </div>
+
+ <div class="two">
+  <section class="panel timer-panel" id="focus">
+   <div class="ring"><div><small>DEEP FOCUS</small><span class="clock" id="clock">25:00</span><span>Stay focused, achieve more.</span><br><button class="btn red-btn" onclick="startTimer()" style="margin-top:12px">Start</button></div></div>
+  </section>
+  <section class="panel quick">
+   <h3>Quick Start</h3><p>Start a focus session in one tap.</p><button class="btn red-btn" onclick="startTimer()">Start Now</button>
+   <h3 style="margin-top:25px">Focus Shield</h3><p>Block distractions and stay in flow.</p><button class="btn" onclick="toast('Focus Shield is ON')">Manage Shield</button>
+   <div class="modes"><button class="mode" onclick="setMinutes(15,this)">15 min</button><button class="mode active" onclick="setMinutes(25,this)">25 min</button><button class="mode" onclick="setMinutes(45,this)">45 min</button><button class="mode" onclick="setMinutes(60,this)">60 min</button></div>
+  </section>
+ </div>
+
+ <div class="cards" id="missions">
+  <section class="panel"><div class="title"><b>Today's Missions</b><span>Earn XP</span></div><div class="mission">Complete 3 Study Sessions<br><span class="red">+60 XP</span></div><div class="mission">Study Maths for 45 Minutes<br><span class="red">+40 XP</span></div><div class="mission">Revise 20 Flashcards<br><span class="red">+20 XP</span></div></section>
+  <section class="panel" id="leader"><div class="title"><b>Weekly Leaderboard</b><span>Live</span></div><div class="rank">1　Pratham Sharma<span>23.8 hrs</span></div><div class="rank">2　Ananya Singh<span>21.4 hrs</span></div><div class="rank">3　Rohan Verma<span>19.6 hrs</span></div><div class="rank you"><b>4　YOU</b><span>16.4 hrs</span></div><div class="rank">5　Kavya Malhotra<span>14.7 hrs</span></div></section>
+  <section class="panel" id="coach"><div class="title"><b>AI Coach</b><span>Your study buddy</span></div><div class="bot">AI</div><p style="color:#aaa;font-size:9px">Hey! Tell me what you need help studying.</p><button class="btn" onclick="ask('Create a study plan')">Create a study plan</button><button class="btn" onclick="ask('How to stay focused')">How to stay focused</button><input class="ask" id="question" placeholder="Ask anything..." onkeydown="if(event.key==='Enter')ask(this.value)"></section>
+ </div>
+
+ <div class="quote"><div><b>Small steps today,<br>BIG RESULTS TOMORROW.</b><br><small>Keep going, superstar.</small></div><div><small>Level</small><div class="level">12</div></div></div>
+</main>
+</div>
+
+<nav class="bottom-nav">
+ <button class="active" onclick="goHome()">Home</button>
+ <button onclick="go('focus')">Focus</button>
+ <button onclick="go('missions')">Missions</button>
+ <button onclick="go('leader')">Rank</button>
+ <button onclick="go('coach')">AI Coach</button>
+</nav>
+
+<div class="toast" id="toast"></div>
+<script>
+let remaining=1500, timer=null, focusSeconds=0;
+function draw(){document.getElementById('clock').textContent=Math.floor(remaining/60)+':'+String(remaining%60).padStart(2,'0')}
+function setMinutes(m,el){if(timer){clearInterval(timer);timer=null}remaining=m*60;draw();document.querySelectorAll('.mode').forEach(x=>x.classList.remove('active'));el.classList.add('active');toast(m+' minute focus selected')}
+function startTimer(){if(timer)return;toast('Focus session started');timer=setInterval(function(){remaining--;focusSeconds++;draw();document.getElementById('hours').textContent=Math.floor(focusSeconds/60)+'m';if(remaining<=0){clearInterval(timer);timer=null;document.getElementById('xp').textContent='+170 XP';toast('Session complete! +50 XP')}},1000)}
+function ask(q){if(!q)return;let s=q.toLowerCase(),a=s.includes('plan')?'Try 25 min Accountancy, 5 min break, 25 min Economics, then 25 min revision.':s.includes('focus')?'Put distractions away and start with just 15 focused minutes.':'Use active recall, spaced repetition and short study sessions.';toast('AI Coach: '+a)}
+function toast(t){let e=document.getElementById('toast');e.textContent=t;e.classList.add('show');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(function(){e.classList.remove('show')},3200)}
+function go(id){document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'})}
+function goHome(){window.scrollTo({top:0,behavior:'smooth'})}
+</script>
+</body>
+</html>
